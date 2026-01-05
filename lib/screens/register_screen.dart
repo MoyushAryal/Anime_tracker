@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import '../screens/register_screen.dart';
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   bool _isPasswordVisible = false;
-  bool _rememberMe = false;
+  bool _isConfirmPasswordVisible = false;
+  bool _agreeToTerms = false;
 
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   void initState() {
@@ -32,8 +35,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   @override
   void dispose() {
     _controller.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -61,9 +66,24 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 40),
+                   
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
                     
-                    // Animated Logo
+                    const SizedBox(height: 20),
+                    
+                    // Logo
                     ScaleTransition(
                       scale: _animation,
                       child: Container(
@@ -85,18 +105,18 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           ],
                         ),
                         child: const Icon(
-                          Icons.play_circle_fill,
+                          Icons.person_add_alt_1,
                           size: 60,
                           color: Colors.white,
                         ),
                       ),
                     ),
                     
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 30),
                     
-                    // Welcome Text
+                   
                     const Text(
-                      'Welcome Back!',
+                      'Create Account',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 32,
@@ -108,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     const SizedBox(height: 8),
                     
                     Text(
-                      'Sign in to continue your anime journey',
+                      'Join our anime community today',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.7),
                         fontSize: 16,
@@ -117,7 +137,16 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     
                     const SizedBox(height: 40),
                     
-                    //user inpout
+                    // Username Input
+                    _buildInputField(
+                      controller: _usernameController,
+                      hintText: 'Username',
+                      prefixIcon: Icons.person_outline,
+                    ),
+                    
+                    const SizedBox(height: 20),
+                    
+                    // Email
                     _buildInputField(
                       controller: _emailController,
                       hintText: 'Email Address',
@@ -127,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     
                     const SizedBox(height: 20),
                     
-                   
+                    // Password
                     _buildInputField(
                       controller: _passwordController,
                       hintText: 'Password',
@@ -143,50 +172,71 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     
                     const SizedBox(height: 20),
                     
+                    // Confirm Password
+                    _buildInputField(
+                      controller: _confirmPasswordController,
+                      hintText: 'Confirm Password',
+                      prefixIcon: Icons.lock_outline,
+                      isPassword: true,
+                      isPasswordVisible: _isConfirmPasswordVisible,
+                      onTogglePassword: () {
+                        setState(() {
+                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                        });
+                      },
+                    ),
+                    
+                    const SizedBox(height: 20),
+                    
+                    // Password Requirements
+                    _buildPasswordRequirements(),
+                    
+                    const SizedBox(height: 20),
+                    
                    
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Remember Me
-                        Row(
-                          children: [
-                            Transform.scale(
-                              scale: 0.8,
-                              child: Checkbox(
-                                value: _rememberMe,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _rememberMe = value!;
-                                  });
-                                },
-                                activeColor: Colors.purpleAccent,
-                                checkColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
+                        Transform.scale(
+                          scale: 0.8,
+                          child: Checkbox(
+                            value: _agreeToTerms,
+                            onChanged: (value) {
+                              setState(() {
+                                _agreeToTerms = value!;
+                              });
+                            },
+                            activeColor: Colors.purpleAccent,
+                            checkColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
                             ),
-                            Text(
-                              'Remember me',
+                          ),
+                        ),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.8),
                                 fontSize: 14,
                               ),
-                            ),
-                          ],
-                        ),
-                        
-                        // Forgot Password
-                        TextButton(
-                          onPressed: () {
-                            
-                          },
-                          child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: Colors.purpleAccent,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                              children: [
+                                const TextSpan(text: 'I agree to the '),
+                                TextSpan(
+                                  text: 'Terms of Service',
+                                  style: const TextStyle(
+                                    color: Colors.purpleAccent,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const TextSpan(text: ' and '),
+                                TextSpan(
+                                  text: 'Privacy Policy',
+                                  style: const TextStyle(
+                                    color: Colors.purpleAccent,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -195,16 +245,16 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     
                     const SizedBox(height: 30),
                     
-                    // Login Button
+                    // Register Button
                     SizedBox(
                       width: double.infinity,
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: () {
-                          _login();
-                        },
+                        onPressed: _agreeToTerms ? _register : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purpleAccent,
+                          backgroundColor: _agreeToTerms
+                              ? Colors.purpleAccent
+                              : Colors.purpleAccent.withOpacity(0.5),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -213,7 +263,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           shadowColor: Colors.purpleAccent.withOpacity(0.5),
                         ),
                         child: const Text(
-                          'Sign In',
+                          'Create Account',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -224,7 +274,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     
                     const SizedBox(height: 30),
                     
-                  
+                   
                     Row(
                       children: [
                         Expanded(
@@ -236,7 +286,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
-                            'Or continue with',
+                            'Or sign up with',
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.5),
                               fontSize: 14,
@@ -253,6 +303,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     ),
                     
                     const SizedBox(height: 30),
+                    
                     
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -279,12 +330,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     
                     const SizedBox(height: 40),
                     
-                  
+                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Don\'t have an account? ',
+                          'Already have an account? ',
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.7),
                             fontSize: 15,
@@ -292,15 +343,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const RegisterScreen(),
-                              ),
-                            );
+                            Navigator.pop(context);
                           },
                           child: Text(
-                            'Sign Up',
+                            'Sign In',
                             style: TextStyle(
                               color: Colors.purpleAccent,
                               fontSize: 15,
@@ -395,8 +441,89 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     );
   }
 
-  void _login() {
-    // here i will add login logic
+  Widget _buildPasswordRequirements() {
+    final password = _passwordController.text;
+    
+    final hasMinLength = password.length >= 8;
+    final hasUppercase = password.contains(RegExp(r'[A-Z]'));
+    final hasLowercase = password.contains(RegExp(r'[a-z]'));
+    final hasNumber = password.contains(RegExp(r'[0-9]'));
+    final hasSpecialChar = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Password must contain:',
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.7),
+            fontSize: 14,
+          ),
+        ),
+        const SizedBox(height: 8),
+        _buildRequirementItem('At least 8 characters', hasMinLength),
+        _buildRequirementItem('One uppercase letter', hasUppercase),
+        _buildRequirementItem('One lowercase letter', hasLowercase),
+        _buildRequirementItem('One number', hasNumber),
+        _buildRequirementItem('One special character', hasSpecialChar),
+      ],
+    );
+  }
+
+  Widget _buildRequirementItem(String text, bool isMet) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Icon(
+            isMet ? Icons.check_circle : Icons.circle,
+            color: isMet ? Colors.greenAccent : Colors.white.withOpacity(0.3),
+            size: 16,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: TextStyle(
+              color: isMet ? Colors.greenAccent : Colors.white.withOpacity(0.5),
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _register() {
+    if (!_agreeToTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please agree to terms and conditions'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+    
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Passwords do not match'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+    
+    
     Navigator.pushReplacementNamed(context, '/dashboard');
+    
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Account created successfully!'),
+        backgroundColor: Colors.greenAccent,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 }

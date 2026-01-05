@@ -3,7 +3,7 @@ import '../models/anime.dart';
 
 
 class AnimeDetailScreen extends StatelessWidget {
-  final Anime anime; // required parameter
+  final Anime anime;
 
   const AnimeDetailScreen({super.key, required this.anime});
 
@@ -19,7 +19,7 @@ class AnimeDetailScreen extends StatelessWidget {
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
-          // 🔹 Promo Video / Banner
+          // vod 
           Container(
             height: 220,
             width: double.infinity,
@@ -34,13 +34,13 @@ class AnimeDetailScreen extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // 🔹 Title + Author + Logo
+        //title and all that
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title & Author
+                
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +117,7 @@ class AnimeDetailScreen extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          // 🔹 Synopsis
+          //brief intro
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
@@ -135,7 +135,7 @@ class AnimeDetailScreen extends StatelessWidget {
 
           const SizedBox(height: 28),
 
-          // 🔹 Episodes List Header
+          // ep list
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
@@ -150,14 +150,14 @@ class AnimeDetailScreen extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // 🔹 Scrollable Episode List
+          // ep list scrollabble
           SizedBox(
-            height: 500, // fixed height to scroll inside main ListView
+            height: 500, 
             child: ListView.builder(
               padding: EdgeInsets.zero,
-              itemCount: anime.totalEpisodes > 100 ? 100 : anime.totalEpisodes, // limit to 100 for demo
+              itemCount: anime.totalEpisodes > 100 ? 100 : anime.totalEpisodes,
               itemBuilder: (context, index) {
-                final bool isFiller = index % 5 == 0; // example filler logic
+                final bool isFiller = index % 5 == 0; 
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
                   child: Container(

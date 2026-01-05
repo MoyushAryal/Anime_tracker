@@ -3,7 +3,7 @@ class Anime {
   final String author;         // Creator/author
   final String imagePath;      // Path to the image in assets
   final int totalEpisodes;     // Total number of episodes
-  int currentEpisode;          // Current progress (mutable)
+  int currentEpisode;          // Current progress
 
   // Constructor
   Anime({
